@@ -10,6 +10,12 @@ defined('ABSPATH') || exit;
 
 require_once __DIR__ . '/devdome-tools-menu.php';
 
+/** Info icon with the long explanation in a hover box; the visible hint stays one line. */
+function devdlink_tip($text)
+{
+    echo '<span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box">' . esc_html($text) . '</span></span>';
+}
+
 function devdlink_menu()
 {
     add_submenu_page(
@@ -1083,23 +1089,31 @@ function devdlink_render_settings_tab()
             <div class="dd-card">
                 <table class="dd-table">
                     <tr>
-                        <th class="dd-th"><?php esc_html_e('Check timeout', 'devdome-link-monitor'); ?> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('Seconds per link check. Timeouts are never counted as broken.', 'devdome-link-monitor'); ?></span></span></th>
-                        <td class="dd-td"><input type="number" min="3" max="30" name="lm_check_timeout" value="<?php echo (int) $timeout; ?>" class="dd-input" style="width:90px;"> </td>
+                        <th class="dd-th"><?php esc_html_e('Check timeout', 'devdome-link-monitor'); ?></th>
+                        <td class="dd-td"><input type="number" min="3" max="30" name="lm_check_timeout" value="<?php echo (int) $timeout; ?>" class="dd-input" style="width:90px;"> 
+                            <p class="dd-hint"><?php esc_html_e('Seconds to wait per link. 10 suits most hosts.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Seconds per link check. Timeouts are never counted as broken.', 'devdome-link-monitor')); ?></p>
+                        </td>
                     </tr>
                     <tr>
-                        <th class="dd-th"><?php esc_html_e('Posts per batch', 'devdome-link-monitor'); ?> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('Posts parsed per background tick. Lower this on small hosts.', 'devdome-link-monitor'); ?></span></span></th>
-                        <td class="dd-td"><input type="number" min="10" max="500" name="lm_scan_chunk_size" value="<?php echo (int) $chunk; ?>" class="dd-input" style="width:90px;"> </td>
+                        <th class="dd-th"><?php esc_html_e('Posts per batch', 'devdome-link-monitor'); ?></th>
+                        <td class="dd-td"><input type="number" min="10" max="500" name="lm_scan_chunk_size" value="<?php echo (int) $chunk; ?>" class="dd-input" style="width:90px;"> 
+                            <p class="dd-hint"><?php esc_html_e('50 is fine for most sites, lower it on small hosts.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Posts parsed per background tick. Lower this on small hosts.', 'devdome-link-monitor')); ?></p>
+                        </td>
                     </tr>
                     <tr>
-                        <th class="dd-th"><?php esc_html_e('Links per batch', 'devdome-link-monitor'); ?> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('Links checked per background tick, at most 2 per host.', 'devdome-link-monitor'); ?></span></span></th>
-                        <td class="dd-td"><input type="number" min="3" max="50" name="lm_check_batch_size" value="<?php echo (int) $batch; ?>" class="dd-input" style="width:90px;"> </td>
+                        <th class="dd-th"><?php esc_html_e('Links per batch', 'devdome-link-monitor'); ?></th>
+                        <td class="dd-td"><input type="number" min="3" max="50" name="lm_check_batch_size" value="<?php echo (int) $batch; ?>" class="dd-input" style="width:90px;"> 
+                            <p class="dd-hint"><?php esc_html_e('Links checked per background run.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Links checked per background tick, at most 2 per host.', 'devdome-link-monitor')); ?></p>
+                        </td>
                     </tr>
                     <tr>
                         <th class="dd-th"><?php esc_html_e('User agent', 'devdome-link-monitor'); ?></th>
-                        <td class="dd-td"><input type="text" name="lm_user_agent" value="<?php echo esc_attr($ua); ?>" class="dd-input" style="width:100%;" maxlength="255"></td>
+                        <td class="dd-td"><input type="text" name="lm_user_agent" value="<?php echo esc_attr($ua); ?>" class="dd-input" style="width:100%;" maxlength="255">
+                            <p class="dd-hint"><?php esc_html_e('Sent with every link check so site owners can identify the scanner.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Some hosts block unknown user agents or empty ones. Keep the default unless a site you link to asks for something specific. The string is sent to the sites you link to, never to DevDome.', 'devdome-link-monitor')); ?></p>
+                        </td>
                     </tr>
                     <tr>
-                        <th class="dd-th"><?php esc_html_e('Excluded domains', 'devdome-link-monitor'); ?> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('One host per line. Links to these hosts are skipped entirely.', 'devdome-link-monitor'); ?></span></span></th>
+                        <th class="dd-th"><?php esc_html_e('Excluded domains', 'devdome-link-monitor'); ?></th>
                         <td class="dd-td">
                             <?php $excluded_n = count(array_filter(array_map('trim', (array) $excluded))); ?>
                             <div class="lm-list-count" data-lm-count-for="lm_excluded_domains" data-lm-count-label="<?php
@@ -1108,6 +1122,7 @@ function devdlink_render_settings_tab()
                                 /* translators: %d is the number of excluded domains. */
                                 echo esc_html(sprintf(__('Domains (%d)', 'devdome-link-monitor'), $excluded_n)); ?></div>
                             <textarea name="lm_excluded_domains" class="dd-textarea" rows="3" placeholder="example.com"><?php echo esc_textarea(implode("\n", (array) $excluded)); ?></textarea>
+                            <p class="dd-hint"><?php esc_html_e('One host per line, these links are never checked.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('One host per line. Links to these hosts are skipped entirely.', 'devdome-link-monitor')); ?></p>
                             
                         </td>
                     </tr>
@@ -1120,37 +1135,42 @@ function devdlink_render_settings_tab()
             <div class="dd-card">
                 <table class="dd-table">
                     <tr>
-                        <th class="dd-th"><label for="lm-select-lm_purge_days"><?php esc_html_e('Auto-purge entries', 'devdome-link-monitor'); ?></label> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('Entries not seen within this window are removed daily. Ignored paths are kept longer (one year) but are capped in number too.', 'devdome-link-monitor'); ?></span></span></th>
+                        <th class="dd-th"><label for="lm-select-lm_purge_days"><?php esc_html_e('Auto-purge entries', 'devdome-link-monitor'); ?></label></th>
                         <td class="dd-td">
                             <?php devdlink_render_dropdown('lm_purge_days', (int) $purge, array(
                                 30  => __('After 30 days', 'devdome-link-monitor'),
                                 90  => __('After 90 days', 'devdome-link-monitor'),
                                 180 => __('After 180 days', 'devdome-link-monitor'),
                             ), __('Auto-purge entries', 'devdome-link-monitor')); ?>
+                            <p class="dd-hint"><?php esc_html_e('Old 404 entries are removed after this window.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Entries not seen within this window are removed daily. Ignored paths are kept longer (one year) but are capped in number too.', 'devdome-link-monitor')); ?></p>
                             
                         </td>
                     </tr>
                     <tr>
-                        <th class="dd-th"><label for="lm-select-lm_referrer_mode"><?php esc_html_e('Store referrer', 'devdome-link-monitor'); ?></label> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('Referrer query strings are NEVER stored - they can carry email addresses, tokens and session identifiers. This setting only chooses how much of the rest is kept.', 'devdome-link-monitor'); ?></span></span></th>
+                        <th class="dd-th"><label for="lm-select-lm_referrer_mode"><?php esc_html_e('Store referrer', 'devdome-link-monitor'); ?></label></th>
                         <td class="dd-td">
                             <?php devdlink_render_dropdown('lm_referrer_mode', $referrer_mode, array(
                                 'origin_path' => __('Origin and path (default)', 'devdome-link-monitor'),
                                 'origin'      => __('Origin only', 'devdome-link-monitor'),
                                 'none'        => __('Do not store referrers', 'devdome-link-monitor'),
                             ), __('Store referrer', 'devdome-link-monitor')); ?>
+                            <p class="dd-hint"><?php esc_html_e('How much of the referring URL is kept, never the query string.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Referrer query strings are NEVER stored - they can carry email addresses, tokens and session identifiers. This setting only chooses how much of the rest is kept.', 'devdome-link-monitor')); ?></p>
                             
                         </td>
                     </tr>
                     <tr>
-                        <th class="dd-th"><?php esc_html_e('Store user agent', 'devdome-link-monitor'); ?> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('Used only for the bot/human split. Turning it off keeps the split working (it is computed at request time) but stores nothing.', 'devdome-link-monitor'); ?></span></span></th>
+                        <th class="dd-th"><?php esc_html_e('Store user agent', 'devdome-link-monitor'); ?></th>
                         <td class="dd-td">
                             <label class="dd-opt"><input type="checkbox" class="dd-check" name="lm_store_user_agent" value="1" <?php checked($store_ua, 1); ?>> <?php esc_html_e('Keep the last user-agent string per path', 'devdome-link-monitor'); ?></label>
+                            <p class="dd-hint"><?php esc_html_e('Off stores nothing, the bot and human split still works.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Used only for the bot/human split. Turning it off keeps the split working (it is computed at request time) but stores nothing.', 'devdome-link-monitor')); ?></p>
 
                         </td>
                     </tr>
                     <tr>
-                        <th class="dd-th"><?php esc_html_e('Bot/human split', 'devdome-link-monitor'); ?> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('Classified from the user-agent string only. A user agent can be forged, so "human" means "did not match a known crawler pattern" - not proof of a real visitor. A request with no user agent at all is always counted as a bot.', 'devdome-link-monitor'); ?></span></span></th>
-                        <td class="dd-td"><?php echo esc_html(function_exists('devdlink_classifier_name') ? devdlink_classifier_name() : ''); ?></td>
+                        <th class="dd-th"><?php esc_html_e('Bot/human split', 'devdome-link-monitor'); ?></th>
+                        <td class="dd-td"><?php echo esc_html(function_exists('devdlink_classifier_name') ? devdlink_classifier_name() : ''); ?>
+                            <p class="dd-hint"><?php esc_html_e('Human means no known crawler pattern matched.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Classified from the user-agent string only. A user agent can be forged, so "human" means "did not match a known crawler pattern" - not proof of a real visitor. A request with no user agent at all is always counted as a bot.', 'devdome-link-monitor')); ?></p>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -1161,13 +1181,14 @@ function devdlink_render_settings_tab()
             <div class="dd-card">
                 <table class="dd-table">
                     <tr>
-                        <th class="dd-th"><label for="lm-select-lm_scheduled_rescan"><?php esc_html_e('Scheduled rescan', 'devdome-link-monitor'); ?></label> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('Scheduled scans run through WP-Cron, which only fires when your site gets traffic (or a real cron job calls wp-cron.php).', 'devdome-link-monitor'); ?></span></span></th>
+                        <th class="dd-th"><label for="lm-select-lm_scheduled_rescan"><?php esc_html_e('Scheduled rescan', 'devdome-link-monitor'); ?></label></th>
                         <td class="dd-td">
                             <?php devdlink_render_dropdown('lm_scheduled_rescan', $sched, array(
                                 'off'     => __('Off', 'devdome-link-monitor'),
                                 'weekly'  => __('Weekly', 'devdome-link-monitor'),
                                 'monthly' => __('Monthly', 'devdome-link-monitor'),
                             ), __('Scheduled rescan', 'devdome-link-monitor')); ?>
+                            <p class="dd-hint"><?php esc_html_e('Runs through WP-Cron, which needs site traffic or a real cron job.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Scheduled scans run through WP-Cron, which only fires when your site gets traffic (or a real cron job calls wp-cron.php).', 'devdome-link-monitor')); ?></p>
                             
                         </td>
                     </tr>
@@ -1180,24 +1201,26 @@ function devdlink_render_settings_tab()
             <div class="dd-card">
                 <table class="dd-table">
                     <tr>
-                        <th class="dd-th"><?php esc_html_e('DevDome account', 'devdome-link-monitor'); ?> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('Email summaries go to the email of the connected DevDome account only. Everything else in this plugin works without an account.', 'devdome-link-monitor'); ?></span></span></th>
+                        <th class="dd-th"><?php esc_html_e('DevDome account', 'devdome-link-monitor'); ?></th>
                         <td class="dd-td">
                             <?php if (!empty($conn['ok'])) : ?>
                                 <span class="dd-pill dd-pill-ok"><span class="dashicons dashicons-yes-alt" style="font-size:14px;width:14px;height:14px;"></span> <?php echo esc_html(trim((string) $conn['account_id'] . (!empty($conn['email']) ? ' · ' . $conn['email'] : ''))); ?></span>
                             <?php else : ?>
                                 <a class="lm-connect-btn" href="<?php echo esc_url($connect_url); ?>"><?php esc_html_e('Connect your DevDome account', 'devdome-link-monitor'); ?></a>
                             <?php endif; ?>
+                            <p class="dd-hint"><?php esc_html_e('Needed only for email summaries.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Email summaries go to the email of the connected DevDome account only. Everything else in this plugin works without an account.', 'devdome-link-monitor')); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th class="dd-th"><?php esc_html_e('Email summary', 'devdome-link-monitor'); ?> <span class="dd-tip"><span class="dashicons dashicons-info-outline"></span><span class="dd-tip-box"><?php esc_html_e('Sent by DevDome to the email of the connected account only, so alerts can never be pointed at someone else. It contains aggregate counts (links checked, broken, redirects, newly broken); scanned URLs, anchor text and post titles are never sent to DevDome.', 'devdome-link-monitor'); ?></span></span></th>
+                        <th class="dd-th"><?php esc_html_e('Email summary', 'devdome-link-monitor'); ?></th>
                         <td class="dd-td">
                             <?php if (!empty($conn['ok']) && !empty($conn['email'])) : ?>
                                 <label class="dd-opt"><input type="checkbox" class="dd-check" name="lm_email_new_broken" value="1" <?php checked($email_on, 1); ?>> <?php esc_html_e('Email me a summary of NEW broken links after a scan, to', 'devdome-link-monitor'); ?> <strong><?php echo esc_html((string) $conn['email']); ?></strong></label>
                             <?php else : ?>
                                 <label class="dd-opt" style="opacity:.6;"><input type="checkbox" class="dd-check" disabled> <?php esc_html_e('Email me a summary of NEW broken links after a scan', 'devdome-link-monitor'); ?></label>
-                                <div class="dd-hint" style="display:block;margin-top:6px;"><?php esc_html_e('Connect your DevDome account above to turn on email summaries. They go to your account email only.', 'devdome-link-monitor'); ?></div>
+                                <p class="dd-hint"><?php esc_html_e('Connect your DevDome account above to turn on email summaries.', 'devdome-link-monitor'); ?></p>
                             <?php endif; ?>
+                            <p class="dd-hint"><?php esc_html_e('Counts only, never your URLs or titles.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Sent by DevDome to the email of the connected account only, so alerts can never be pointed at someone else. It contains aggregate counts (links checked, broken, redirects, newly broken); scanned URLs, anchor text and post titles are never sent to DevDome.', 'devdome-link-monitor')); ?></p>
                         </td>
                     </tr>
                 </table>
