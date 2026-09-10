@@ -4,7 +4,7 @@ Tags: broken link checker, broken links, link checker, 404 monitor, 404
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.5.4
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -95,6 +95,10 @@ Not scanned: widgets, menus, theme and customizer options, post meta and custom 
 * Timeouts, DNS failures, TLS errors and refused connections become "Unverified" with the reason. 401, 403 after a full GET, 429 and 999 become "Could not verify". None of these are ever counted as broken.
 * Low default budgets and per-host spacing: at most 2 links per host per tick. Check timeout, posts per batch and links per batch are adjustable in Settings.
 
+= AI and Agent Support =
+
+On WordPress 6.9 and newer, DevDome Link Monitor registers WordPress Abilities for its read and scan actions: get the link health summary, get broken links, get 404 errors, get scan progress, run a link scan and recheck one link. Compatible AI agents and MCP clients can discover and use these abilities when the site exposes them, for example through the official WordPress MCP Adapter. Every ability runs the same code as the plugin screens and is protected by the same capability checks.
+
 == External services ==
 
 This plugin makes outbound HTTP requests for one core purpose, one optional DevDome service and one small catalog fetch:
@@ -166,6 +170,9 @@ Yes. Network activation provisions the sites it can reach in one request; any re
 4. Scan Settings: check timeout, posts and links per batch, user agent and excluded domains.
 
 == Changelog ==
+
+= 1.6.0 =
+* WordPress Abilities API support (WordPress 6.9+): six abilities for AI agents and MCP clients: get-link-summary, get-broken-links, get-404s, get-scan-progress, run-link-scan, recheck-link. Same code and capability checks as the plugin screens.
 
 = 1.5.4 =
 * Settings: every option now shows a one line hint under the control, with the info icon holding the full explanation, the same layout as DevDome Malware Scanner.

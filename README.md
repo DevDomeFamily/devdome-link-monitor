@@ -47,6 +47,8 @@ by hand; DevDome watches from inside WordPress, always on.
   picker.
 - **Settings.** Check timeout, posts and links per batch, user agent, excluded domains, scheduled rescans, email on
   new broken links.
+- **AI agents and MCP.** Six WordPress Abilities (WordPress 6.9+) so connected AI agents can read broken links and
+  404s and run scans. See below.
 
 ## Screenshots
 
@@ -61,6 +63,37 @@ by hand; DevDome watches from inside WordPress, always on.
 
 [![Link scanner settings: check timeout, posts and links per batch, user agent and excluded domains](screenshots/devdome-link-monitor-scanner-settings.png)](https://wordpress.org/plugins/devdome-link-monitor/)
 *Settings: timeout, batch sizes, user agent, excluded domains.*
+
+## AI agents and MCP (WordPress Abilities API)
+
+Since 1.6.0, on WordPress 6.9 and newer, DevDome Link Monitor registers its read and scan actions as
+[WordPress Abilities](https://developer.wordpress.org/apis/abilities-api/). Any AI agent or MCP client connected to
+the site through the official [WordPress MCP Adapter](https://github.com/WordPress/mcp-adapter) discovers them
+automatically, so you can ask Claude, ChatGPT or Cursor "find the broken links on this site" and the agent picks the
+right tool. Every ability runs the same code as the plugin screens and is guarded by the same capability checks;
+nothing is exposed to anonymous requests.
+
+| Ability | What it does | Permission |
+|---|---|---|
+| `devdome-link-monitor/get-link-summary` | Link health score, ok / broken / redirect / timeout / blocked totals, last scan time, 404 totals | view |
+| `devdome-link-monitor/get-broken-links` | Links from the last scan with status, HTTP code, error, anchor text and the pages they appear on; `filter` = broken (default), redirects, timeouts, blocked, internal, external, all; `search`, `page`, `per_page` | data |
+| `devdome-link-monitor/get-404s` | The 404 log: path, human hits, bot hits, referrer, first and last seen; `humans_only`, `orderby`, `search`, paging | data |
+| `devdome-link-monitor/get-scan-progress` | Whether a scan is running, phase, percent, processed / total | view |
+| `devdome-link-monitor/run-link-scan` | Start a scan; `mode` = full (default) or recheck (re-verify last scan's broken, unverified and blocked links). Runs in the background | scan |
+| `devdome-link-monitor/recheck-link` | Check one link again now by `link_id` and return its updated status | scan |
+
+All six are `public` and `show_in_rest` (`GET /wp-json/wp-abilities/v1/abilities`, authenticated). The read abilities
+carry the `readonly` annotation; none is destructive. On the MCP Adapter's default server they appear as direct
+tools (`devdome-link-monitor-get-broken-links` and so on) next to the adapter's discover / execute meta-tools.
+
+Try it: install the MCP Adapter, create an application password for an administrator, then add the site to Claude Code:
+
+```json
+{"mcpServers":{"my-site":{"type":"http","url":"https://example.com/wp-json/mcp/mcp-adapter-default-server","headers":{"Authorization":"Basic <base64 user:application-password>"}}}}
+```
+
+Verified 2026-09-10 with Claude Code as the MCP client: "find the broken links on this site", "which 404s do real
+people hit most", "re-verify the broken links" each selected the right ability unaided; a subscriber account was refused.
 
 ## Requirements
 

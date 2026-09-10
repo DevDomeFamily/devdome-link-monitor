@@ -3,7 +3,7 @@
 Plugin Name: DevDome Link Monitor
 Plugin URI: https://devdome.com/
 Description: Find broken links and monitor 404s with a user-agent bot/human split. Part of the DevDome suite.
-Version: 1.5.4
+Version: 1.6.0
 Author: DevDome
 Author URI: https://devdome.com
 Text Domain: devdome-link-monitor
@@ -23,7 +23,7 @@ if (file_exists(__DIR__ . '/wporg-build.php')) {
     require __DIR__ . '/wporg-build.php';
 }
 
-define('DEVDLINK_VERSION', '1.5.4');
+define('DEVDLINK_VERSION', '1.6.0');
 define('DEVDLINK_DIR', plugin_dir_path(__FILE__));
 define('DEVDLINK_URL', plugin_dir_url(__FILE__));
 define('DEVDLINK_FILE', __FILE__);
@@ -43,6 +43,7 @@ require_once DEVDLINK_DIR . 'includes/extractor.php';
 require_once DEVDLINK_DIR . 'includes/checker.php';
 require_once DEVDLINK_DIR . 'includes/queue.php';
 require_once DEVDLINK_DIR . 'includes/rest.php';
+require_once DEVDLINK_DIR . 'includes/abilities.php';
 
 if (is_admin()) {
     require_once DEVDLINK_DIR . 'includes/admin.php';
