@@ -4,7 +4,7 @@ Tags: broken link checker, broken links, link checker, 404 monitor, 404
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.6.0
+Stable tag: 1.7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -97,7 +97,7 @@ Not scanned: widgets, menus, theme and customizer options, post meta and custom 
 
 = AI and Agent Support =
 
-On WordPress 6.9 and newer, DevDome Link Monitor registers WordPress Abilities for its read and scan actions: get the link health summary, get broken links, get 404 errors, get scan progress, run a link scan and recheck one link. Compatible AI agents and MCP clients can discover and use these abilities when the site exposes them, for example through the official WordPress MCP Adapter. Every ability runs the same code as the plugin screens and is protected by the same capability checks.
+On WordPress 6.9 and newer, DevDome Link Monitor registers WordPress Abilities covering the whole plugin: link health summary, every checked link with its pages and every filter, one link, the 404 log with every filter, redirect suggestions, scan start (full or recheck), pause, resume and cancel, progress and history, recheck one link, replace a link URL in content, unlink, dismiss, ignore or delete a 404, run the retention sweep, exports, settings (read and update), the error and change logs, dismiss the last error and recount the summary. Compatible AI agents and MCP clients can discover and use these abilities when the site exposes them, for example through the official WordPress MCP Adapter. Every ability runs the same code as the plugin screens under the same capability checks; content edits keep the per-post edit permission check.
 
 == External services ==
 
@@ -170,6 +170,12 @@ Yes. Network activation provisions the sites it can reach in one request; any re
 4. Scan Settings: check timeout, posts and links per batch, user agent and excluded domains.
 
 == Changelog ==
+
+= 1.7.1 =
+* Connect fix (shared DevDome core 1.6.6): the connect claim now waits up to 30 seconds and keeps the handshake for 20 minutes so a refresh retries it, the DevDome hub shows why a connect failed with a Try again link, and the verify file is served through a query form for hosts that answer /.well-known/ before WordPress.
+
+= 1.7.0 =
+* WordPress Abilities API: 23 abilities covering every feature (links, 404s, scans, edit URL, unlink, dismiss, 404 ignore and delete, purge, exports, settings, logs). Empty-input abilities refuse unexpected arguments cleanly.
 
 = 1.6.0 =
 * WordPress Abilities API support (WordPress 6.9+): six abilities for AI agents and MCP clients: get-link-summary, get-broken-links, get-404s, get-scan-progress, run-link-scan, recheck-link. Same code and capability checks as the plugin screens.
