@@ -4,7 +4,7 @@ Tags: broken link checker, broken links, link checker, 404 monitor, 404
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -170,6 +170,9 @@ Yes. Network activation provisions the sites it can reach in one request; any re
 4. Scan Settings: check timeout, posts and links per batch, user agent and excluded domains.
 
 == Changelog ==
+
+= 1.7.2 =
+* Updates now work when the plugin folder belongs to another system user (shared DevDome core 1.7.4): a folder installed from a root shell or by an AI agent used to fail every update with "Could not move the old version", and an uploaded zip kept the old version. The plugin is copied to a web-owned folder right before WordPress replaces it, the old folder is kept hidden and recorded so the DevDome Malware Scanner recognises it, and the update goes through the hub, the Plugins screen, bulk updates, uploads and automatic updates alike.
 
 = 1.7.1 =
 * Connect fix (shared DevDome core 1.6.6): the connect claim now waits up to 30 seconds and keeps the handshake for 20 minutes so a refresh retries it, the DevDome hub shows why a connect failed with a Try again link, and the verify file is served through a query form for hosts that answer /.well-known/ before WordPress.
