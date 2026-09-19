@@ -1,0 +1,28 @@
+{
+    "name": "devdome/devdome-link-monitor",
+    "description": "Free WordPress broken link checker and 404 monitor that never hammers your server and never guesses: two-failure rule, background slices, bot/human split, redirect suggestions. Free alternative to Broken Link Checker and Link Whisper.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://wordpress.org/plugins/devdome-link-monitor/",
+    "keywords": [
+        "wordpress",
+        "wordpress-plugin",
+        "broken-links",
+        "404-monitor",
+        "link-checker"
+    ],
+    "authors": [
+        {
+            "name": "DevDome",
+            "homepage": "https://devdome.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/DevDomeFamily/devdome-link-monitor/issues",
+        "source": "https://github.com/DevDomeFamily/devdome-link-monitor"
+    },
+    "require": {
+        "php": ">=7.4",
+        "composer/installers": "^1.0 || ^2.0"
+    }
+}
