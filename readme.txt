@@ -1,110 +1,131 @@
-=== DevDome Link Monitor – Broken Link Checker & 404 Monitor ===
+=== DevDome Link Monitor: Broken Link Checker, Dead Links & 404 Monitor ===
 Contributors: devdome
-Tags: broken link checker, broken links, link checker, 404 monitor, 404
+Tags: broken link checker, dead link checker, external link checker, broken link finder, 404 monitor
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Broken link checker for WordPress. Find and fix broken links, detect dead URLs, monitor 404 errors, and reduce false positives.
+External link checker for published post content. Find broken images and URLs, edit exact links and log visitor or bot 404 errors.
 
 == Description ==
 
-= Broken Link Checker and 404 Monitor for WordPress =
+DevDome Link Monitor is a broken link checker and 404 monitor for WordPress. Scan published content for dead URLs, review missing-page requests from visitors and crawlers, and fix broken links from your dashboard without opening every post. Link checking runs on your own server, requires no cloud account and has no page or link limits.
 
-DevDome Link Monitor is a broken link checker and 404 monitor for WordPress that helps you find and fix broken links, detect dead URLs, and track 404 errors directly from your WordPress dashboard.
+= Find broken links and missing images =
 
-Scan the links in your published content, identify genuinely broken URLs, see which missing pages visitors and crawlers are hitting, and fix link problems without opening every post by hand.
+Use the broken link finder to check internal links and external links in one scan. It also checks image URLs in saved content to help you find broken images and missing images.
 
-Unlike aggressive link scanners, DevDome Link Monitor verifies uncertain failures before it marks a link as broken. That reduces false positives caused by temporary server errors, rate limits, anti-bot protection and connection problems, so the broken link list you get is one you can act on.
+The review table separates results into:
 
-= Find Broken Links =
+* Healthy.
+* Broken.
+* Redirected, with the final URL and hop count.
+* Unverified, with the reason: timeouts, DNS failures, TLS errors or refused connections.
+* Could not verify: 401, 403 after a full GET, 429 rate limited or 999 anti-bot responses.
 
-Scan the links in your published WordPress content and see at a glance which URLs are:
+As a dead link checker, the plugin requires two failures in checks separated in time before marking a URL broken. A link that recovers starts from a clean slate.
 
-* Healthy
-* Broken
-* Redirected (with the final URL and hop count)
-* Unverified (timeouts, DNS failures, TLS errors, refused connections)
-* Could not verify (401, 403 after a full GET, 429 rate limited, 999 anti-bot)
+= What the broken link scanner checks =
 
-The link checker covers internal and external links in one pass, so you do not need to open every URL yourself.
+The scanner reads saved content (`post_content`) from **published** posts in **public** post types, excluding attachments. It checks `<a href>` and `<img src>` URLs, including markup inside block comments.
 
-A link is never marked broken because a single request failed. It has to fail twice in checks separated in time, and a link that recovers starts from a clean slate. This keeps temporary errors, rate limiting, anti-bot protection, timeouts and DNS hiccups out of your broken list.
+These sources are not scanned:
 
-= Fix Broken Links =
+* Widgets, menus, theme options and customizer options.
+* Post meta and custom fields.
+* `srcset` candidates, oEmbed targets and iframe targets.
+* Bodies of reusable or synced patterns that are not inlined in the post.
+* Drafts, private content and scheduled content.
 
-Fix broken links directly from the review table in your WordPress dashboard:
+This is not a whole-site crawler. During a content audit, use its results to review links in the published content covered above.
 
-* Edit URL: the new address is written into every post that contains that exact link
-* Unlink: the link is removed and the anchor text stays
-* Re-check now
-* Dismiss links you keep on purpose
-* Review redirects with their final destination
+= Replace links from the dashboard =
 
-Every content change goes through WordPress in the normal way, so revisions apply, and it needs your edit permission on every affected post. Each change is recorded in an audit trail.
+The review table provides these actions:
 
-= Monitor 404 Errors =
+* Edit URL: write the new address into every post containing that exact link.
+* Unlink: remove the link and keep its anchor text.
+* Re-check now: check the URL again.
+* Dismiss: set aside links you keep on purpose.
+* Review redirects and their final destinations.
 
-The built-in 404 monitor is always on and records every request for a missing URL on your site:
+The search replace scope is limited to exact link URLs through Edit URL. It does not replace arbitrary text or other database values.
 
-* The requested path, with the query string removed
-* Hit counts, first seen and last seen
-* The last referrer and, unless you turn it off, the last user agent
-* Human hits and bot hits kept apart, using known crawler patterns
+Content changes go through WordPress normally, so revisions apply. You need edit permission on every affected post, and each change is recorded in an audit trail.
 
-Find the URLs visitors are trying to reach but cannot. Each 404 path gets a redirect suggestion matched against your real post and page slugs, a one-click redirect if DevDome Redirect Manager is active, or a copy-ready .htaccess rule. Ignore paths, delete rows, export to CSV, and let old entries purge automatically after 30, 90 or 180 days.
+= Monitor 404 not found requests =
 
-= Link Health at a Glance =
+The built-in 404 monitor is always on. It records requests for missing URLs on your site, including requests that reach a 404 page:
 
-The Overview tab shows a link health score, the number of links checked, healthy links, broken links and redirects, the 404 monitor's human and bot totals, and a health trend over the last 12 scans.
+* Requested path, with the query string removed.
+* Hit count, first seen and last seen.
+* Last referrer and, unless disabled, last user agent.
+* Separate human and bot hit counts, based on known crawler patterns.
 
-= Lightweight Background Scanning =
+Use the log to see which missing URLs visitors and crawlers keep requesting. You can ignore paths, delete rows and export results to CSV. Old active entries purge automatically after 30, 90 or 180 days.
 
-Scans run in small batches instead of checking every URL at once, with at most two links per host per batch, so your site stays responsive. Start, pause, resume or cancel a scan at any time. It keeps running in the background while the screen is open or through WP-Cron, and an optional weekly or monthly rescan can email you a summary of newly broken links only.
+= Review 404 redirect suggestions =
 
-= Reduce False Positives =
+Each 404 path can receive a redirect suggestion matched against your real post and page slugs. To redirect 404 requests, use the one-click action when DevDome Redirect Manager is active, or copy the suggested .htaccess rule.
 
-Not every failed automated request means a link is dead. Some sites block automated requests, rate-limit scanners, require authentication, return temporary server errors, reject HEAD requests, or time out now and then. DevDome Link Monitor keeps those uncertain results separate as "Unverified" or "Could not verify" instead of calling them broken, so the broken list stays short and true.
+= Review link health =
 
-= What Is Scanned, and What Is Not =
+The Overview tab shows:
 
-Scanned: the saved content (`post_content`) of **published** posts in **public** post types (attachments excluded), meaning `<a href>` and `<img src>`, including markup inside block comments. Internal and external URLs are both checked.
+* Link health score.
+* Number of links checked, healthy links, broken links and redirects.
+* Human and bot totals from the 404 monitor.
+* Health trend over the last 12 scans.
 
-Not scanned: widgets, menus, theme and customizer options, post meta and custom fields, `srcset` candidates, oEmbed and iframe targets, the bodies of reusable or synced patterns that are not inlined in the post, and drafts, private or scheduled content. This is not a whole-site crawler.
+Use these results alongside your other SEO tools for the broken-link portion of an SEO audit or site audit. The score describes link health within the plugin's scan scope, not a complete assessment of your website.
 
-= Why Use DevDome Link Monitor? =
+= Run scans in the background =
 
-* Find broken links in your WordPress content
-* Fix broken URLs from the dashboard
-* Monitor 404 errors with human and bot hits kept apart
-* Detect dead URLs and redirect chains
-* Fewer false positives: uncertain links are reviewed separately
-* Checks run in small background batches
-* Export 404 results to CSV
-* No cloud account needed, no page or link limits, everything runs on your own server
+Start, pause, resume or cancel a scan at any time. Scans run in small, resumable batches, driven by your browser while the screen is open or by WP-Cron.
 
-= How Link Checking Works =
+Low default budgets and per-host spacing limit each batch or tick to at most two links per host. Settings lets you adjust check timeout, posts per batch and links per batch, and configure the user agent and excluded domains.
 
-* Links are discovered in the saved content of published posts, then checked in chunks that are resumable, pausable and cancelable, driven by your browser while the screen is open or by WP-Cron.
-* Each link is requested with HEAD first. A size-capped GET (128 KB) is sent when the server rejects or gates HEAD, and before any HEAD failure is recorded, because some servers mishandle HEAD while GET works.
-* Redirects are followed manually, up to 5 hops with loop detection, and reported with the final URL and hop count.
-* Broken means two failures in checks separated in time (15 seconds by default). Two failures inside the same processing burst do not count as independent evidence.
-* Timeouts, DNS failures, TLS errors and refused connections become "Unverified" with the reason. 401, 403 after a full GET, 429 and 999 become "Could not verify". None of these are ever counted as broken.
-* Low default budgets and per-host spacing: at most 2 links per host per tick. Check timeout, posts per batch and links per batch are adjustable in Settings.
+Optional weekly or monthly rescans can produce an email summary of newly broken links only. Email requires a connected DevDome account and is sent by DevDome, with counts only.
 
-= AI and Agent Support =
+= How verification reduces false positives =
 
-On WordPress 6.9 and newer, DevDome Link Monitor registers WordPress Abilities covering the whole plugin: link health summary, every checked link with its pages and every filter, one link, the 404 log with every filter, redirect suggestions, scan start (full or recheck), pause, resume and cancel, progress and history, recheck one link, replace a link URL in content, unlink, dismiss, ignore or delete a 404, run the retention sweep, exports, settings (read and update), the error and change logs, dismiss the last error and recount the summary. Compatible AI agents and MCP clients can discover and use these abilities when the site exposes them, for example through the official WordPress MCP Adapter. Every ability runs the same code as the plugin screens under the same capability checks; content edits keep the per-post edit permission check.
+Sites may reject HEAD requests, block automated requests, require authentication, rate-limit scanners, return temporary server errors or time out. These responses need different treatment from a confirmed broken URL.
+
+Verification follows these rules:
+
+* Request each URL with HEAD first.
+* Send a size-capped GET of 128 KB when a server rejects or gates HEAD, and before recording any HEAD failure. Some servers mishandle HEAD while GET works.
+* Follow redirects manually, up to 5 hops, with loop detection. Report the final URL and hop count.
+* Require two failures separated in time, 15 seconds by default. Two failures within the same processing burst do not count as independent evidence.
+* Keep timeouts, DNS failures, TLS errors and refused connections as "Unverified".
+* Keep 401, 403 after a full GET, 429 and 999 responses as "Could not verify".
+
+Unverified and Could not verify results never count as broken. This reduces false positives from temporary failures and access restrictions, but cannot identify every problem: a server returning HTTP 200 for a "page not found" page still counts as OK.
+
+= AI and agent support =
+
+On WordPress 6.9 and newer, the plugin registers WordPress Abilities covering the whole plugin:
+
+* Read the link health summary, every checked link with its pages and every filter, or one link.
+* Read the 404 log with every filter and get redirect suggestions.
+* Start a full scan or recheck, pause, resume, cancel, and read progress and history.
+* Recheck one link, replace a link URL in content, unlink or dismiss.
+* Ignore or delete a 404, run the retention sweep and export data.
+* Read and update settings, read error and change logs, dismiss the last error and recount the summary.
+
+Compatible AI agents and MCP clients can discover and use these abilities when the site exposes them, for example through the official WordPress MCP Adapter.
+
+Every ability runs the same code as the plugin screens under the same capability checks. Content edits retain the per-post edit permission check.
 
 == External services ==
 
 This plugin makes outbound HTTP requests for one core purpose, one optional DevDome service and one small catalog fetch:
 
 1. **Link checking (the sites you link to): core feature, runs only when a scan runs.** To verify your outgoing links, the plugin sends an HTTP HEAD request (with a GET fallback for servers that reject or gate HEAD) from your server directly to each URL found in your published content. The target server sees your server's IP address, the configurable user-agent string and the URL itself - including anything personal or secret a URL in your own content happens to contain. No cookies, authentication headers or site secrets are sent. A scan only runs when you start one or when the schedule you enabled fires. Before a failure is recorded from a HEAD response, it is confirmed with a size-capped GET, because some servers mishandle HEAD. Before any request is sent the URL must pass a fail-closed policy: http/https only, port 80 or 443 only, no credentials in the URL, and every address the host resolves to must be public - loopback, private, link-local, carrier-grade NAT, multicast and reserved ranges are refused, in every notation, on the first request and on every redirect hop. Link verification requires the PHP cURL transport, because the validated addresses must be pinned to the connection. If cURL is unavailable, or WordPress routes the target through a configured HTTP proxy where the destination cannot be pinned, the URL is left unverified and no request is sent. These are the websites you link to, not DevDome services.
-2. **DevDome account service (analytics.devdome.com and api.devdome.com): optional, opt-in, dormant.** The Overview tab shows an optional card that links to the bundled DevDome suite hub's Account screen. Nothing is sent to DevDome until you click Connect there, and no functionality on this screen is gated on connecting. If you do connect: the plugin sends your site address, a generated site ID and a generated secret site token to `analytics.devdome.com/api/plugin/connect/start` and `/api/plugin/connect/claim` to link this site to your account; afterwards it periodically confirms the connection at `api.devdome.com/plugin/account` (sending the site domain and that token), and disconnecting sends the same identifiers to `api.devdome.com/plugin/disconnect`. No scanned URL, anchor text, post title, 404 path, referrer, user agent or visitor IP address is sent by this plugin. Terms: https://devdome.com/terms-of-service and privacy: https://devdome.com/privacy-policy
+2. **DevDome account service (analytics.devdome.com and api.devdome.com): optional, opt-in, dormant.** The Overview tab shows an optional card that links to the bundled DevDome suite hub's Account screen. Nothing is sent to DevDome until you click Connect there, and no functionality on this screen is gated on connecting. If you do connect: the plugin sends your site address, a generated site ID and a generated secret site token to `analytics.devdome.com/api/plugin/connect/start` and `/api/plugin/connect/claim` to link this site to your account; afterwards it periodically confirms the connection at `api.devdome.com/plugin/account` (sending the site domain and that token), and disconnecting sends the same identifiers to `api.devdome.com/plugin/disconnect`. No scanned URL, anchor text, post title, 404 path, referrer, user agent or visitor IP address is sent by this plugin. When you connect from the DevDome Tools dashboard, whose Connect card states this before you press the button, those account checks also carry the slug and version of each active DevDome plugin on the site plus the bundled DevDome library, WordPress and PHP versions, so your DevDome account can show your sites and their DevDome plugins for support and update notices. Nothing about other plugins, users, email addresses, content or visitors is included. Sites connected before this was introduced, and sites connected from a button that does not show that text, do not send the list. Disconnecting stops the plugin list. Terms: https://devdome.com/terms-of-service and privacy: https://devdome.com/privacy-policy
    Once connected, each completed link scan sends DevDome this site's DevDome identifiers (the site ID, and the site token in a request header), the scan number, aggregate scan metrics (links checked, healthy, broken, redirects, health score, how many links are newly broken), whether the email summary is switched on, and the address of this plugin screen (so the email can link back to it). It does not send scanned link URLs, anchor text, source post titles, 404 request paths, referrers, user agents or visitor IP addresses. DevDome uses it for your account dashboard and to email you that summary from alerts@devdome.com. Nothing is sent while the site is not connected.
 3. **Plugin catalog (`devdome.com`).** The DevDome Dashboard inside wp-admin fetches the list of DevDome plugins (names, descriptions, logos, links, WordPress.org slugs) from `https://devdome.com/wp-plugins/catalog.json` at most once every 12 hours, so the list stays current. Only the bundled core version is sent in the request; no site or visitor data. Service provider: DevDome. Terms: https://devdome.com/terms-of-service Privacy policy: https://devdome.com/privacy-policy
 
@@ -133,34 +154,60 @@ The bundled shared library also references endpoints that are never contacted by
 == Frequently Asked Questions ==
 
 = Does it check internal and external links? =
-Yes. Every `<a href>` and `<img src>` in the saved content of published posts is checked, whether it points to your own site or to another one. Widgets, menus, custom fields and theme options are not scanned.
+
+Yes. Every `<a href>` and `<img src>` in the saved content of published posts is checked, whether it points to your own site or another site. Widgets, menus, custom fields and theme options are not scanned. The full scan scope and exclusions are listed in the Description.
 
 = Does it automatically change my content? =
+
 No. Scanning only reads your content and records results. Content changes only when you choose Edit URL or Unlink for a specific link, and only if you have WordPress permission to edit every post that contains it.
 
 = Why is a working link shown as unverified? =
-Some websites block automated requests, rate-limit them, require a login, or time out now and then. DevDome Link Monitor keeps those results separate as "Unverified" or "Could not verify" instead of calling the link broken. Use Re-check now, or open the link yourself.
+
+Some websites block automated requests, rate-limit them, require a login or time out. DevDome Link Monitor keeps those results separate as "Unverified" or "Could not verify" instead of calling the link broken. Use Re-check now, or open the link yourself.
 
 = Why does it report fewer broken links than my old link checker? =
-Because it refuses to guess. A link is only marked broken after failing twice in checks separated in time; timeouts, DNS failures and TLS errors are shown as "Unverified" rather than broken; and 401/403/429/999 responses are shown as "Could not verify". What is left is much more likely to be genuinely broken. It is a conservative policy, not a guarantee - a target that answers 200 with a "page not found" page still counts as OK.
+
+A link is only marked broken after failing twice in checks separated in time. Timeouts, DNS failures and TLS errors are shown as "Unverified"; 401/403/429/999 responses are shown as "Could not verify".
+
+This conservative policy makes the remaining results more likely to be broken, but it is not a guarantee. A target that answers 200 with a "page not found" page still counts as OK.
 
 = Does the plugin monitor 404 errors? =
-Yes, always. Every request for a missing URL is recorded with its path, hit count, last referrer, last user agent and first and last seen time, with human hits and bot hits kept apart.
+
+Yes, always. Every request for a missing URL is recorded with its path, hit count, first and last seen time, and the last referrer and user agent according to your privacy settings. Human hits and bot hits are kept apart.
+
+As a 404 checker, the link scan also checks URLs found in published content. The always-on log records incoming missing-page requests separately.
 
 = Will scanning slow down my website? =
-404 logging adds one indexed lookup and one write, and only on requests that are already 404s. The scan runs in small chunks with low default budgets and at most two links per host per tick, but it does run on your server and does use PHP workers, so a scan is not free. Lower the batch sizes in Settings on small hosts.
+
+404 logging adds one indexed lookup and one write, and only on requests that are already 404s. Scans run in small chunks with low default budgets and at most two links per host per tick.
+
+Scanning runs on your server and uses PHP workers, so it is not free. Lower the batch sizes in Settings on small hosts.
 
 = How does the bot/human split work? =
-It matches the user-agent string against known crawler patterns. That is all it can do: user agents are trivially forged, so treat "human" as "not obviously a crawler". Requests with no user agent are counted as bots. The Settings tab names the classifier that produced the split.
+
+It matches the user-agent string against known crawler patterns. User agents are easily forged, so treat "human" as "not obviously a crawler". Requests with no user agent are counted as bots. The Settings tab names the classifier that produced the split.
 
 = Do scheduled scans work on a quiet site? =
-They use WP-Cron, which only fires when someone visits your site (or when a real cron job calls `wp-cron.php`). On a low-traffic site a scheduled scan can run late.
+
+They use WP-Cron, which only fires when someone visits your site or when a real cron job calls `wp-cron.php`. On a low-traffic site a scheduled scan can run late.
 
 = Does DevDome receive my link data? =
-No. Link checks go from your server straight to the sites you link to. Nothing is sent to DevDome unless you connect a DevDome account, and even then only aggregate counts (links checked, healthy, broken, redirects) for the optional email summary. Never URLs, anchor text, post titles or 404 paths.
+
+No link URLs are sent to DevDome. Link checks go from your server straight to the sites you link to.
+
+No scan data is sent to DevDome unless you connect a DevDome account. Once connected, DevDome receives the aggregate scan counts and associated account and scan metadata listed under External services, for the account dashboard and optional email summary. Never URLs, anchor text, post titles or 404 paths.
 
 = Does it support multisite? =
-Yes. Network activation provisions the sites it can reach in one request; any remaining site (and any site created later while the plugin is network-active) creates its own tables on its first load. Settings, the 404 log and scan results are per site.
+
+Yes. Network activation provisions the sites it can reach in one request. Any remaining site, and any site created later while the plugin is network-active, creates its own tables on its first load. Settings, the 404 log and scan results are per site.
+
+= How do I find links not working in WordPress? =
+
+Open **DevDome → Link Monitor**, click **Scan Links** and review the broken results. Use Edit URL to replace an exact link across its source posts, or Unlink to keep the anchor text without the link. Check uncertain results separately with Re-check now or by opening the URL yourself.
+
+= Can I redirect 404 errors from the log? =
+
+You can request suggestions matched against existing post and page slugs. Use the one-click redirect action when DevDome Redirect Manager is active, or copy the .htaccess rule for the path.
 
 == Screenshots ==
 
@@ -171,32 +218,45 @@ Yes. Network activation provisions the sites it can reach in one request; any re
 
 == Changelog ==
 
+= 1.7.3 =
+* Bundled DevDome library 1.7.6: if you connect a DevDome account from the DevDome Tools dashboard, the Connect card now says exactly what is shared, including the list of active DevDome plugins and their versions. Sites that were already connected, and sites that never connect, send nothing new. See External services.
+* Listing text rewritten: new title, short description, tags and a restructured description. No change to how the plugin works.
+
 = 1.7.2 =
+
 * Updates now work when the plugin folder belongs to another system user (shared DevDome core 1.7.4): a folder installed from a root shell or by an AI agent used to fail every update with "Could not move the old version", and an uploaded zip kept the old version. The plugin is copied to a web-owned folder right before WordPress replaces it, the old folder is kept hidden and recorded so the DevDome Malware Scanner recognises it, and the update goes through the hub, the Plugins screen, bulk updates, uploads and automatic updates alike.
 
 = 1.7.1 =
+
 * Connect fix (shared DevDome core 1.6.6): the connect claim now waits up to 30 seconds and keeps the handshake for 20 minutes so a refresh retries it, the DevDome hub shows why a connect failed with a Try again link, and the verify file is served through a query form for hosts that answer /.well-known/ before WordPress.
 
 = 1.7.0 =
+
 * WordPress Abilities API: 23 abilities covering every feature (links, 404s, scans, edit URL, unlink, dismiss, 404 ignore and delete, purge, exports, settings, logs). Empty-input abilities refuse unexpected arguments cleanly.
 
 = 1.6.0 =
+
 * WordPress Abilities API support (WordPress 6.9+): six abilities for AI agents and MCP clients: get-link-summary, get-broken-links, get-404s, get-scan-progress, run-link-scan, recheck-link. Same code and capability checks as the plugin screens.
 
 = 1.5.4 =
+
 * Settings: every option now shows a one line hint under the control, with the info icon holding the full explanation, the same layout as DevDome Malware Scanner.
 * DevDome Dashboard: installing another DevDome plugin from the dashboard no longer activates it, you activate it yourself from its card. Output escaping tightened.
 
 = 1.5.3 =
+
 * Shared DevDome library updated to core 1.6.3: the DevDome Dashboard now reads the current plugin catalog (names, descriptions, logos, links) from devdome.com once every 12 hours, and other DevDome plugins can be installed from WordPress.org in one click.
 
 = 1.5.2 =
+
 * First tab is now called Overview, in line with the other DevDome plugins. Old links to the Dashboard tab still open it.
 
 = 1.5.1 =
+
 * Scan history pruning now binds every id in its IN (...) lists through $wpdb->prepare().
 
 = 1.5.0 =
+
 * First WordPress.org release.
 * Broken link scanner with a two-strike rule: a link is only called broken after two separate failures, and 401, 403, 429 and anti-bot answers are reported as blocked, never broken.
 * Passive 404 monitor with human hits and bot hits kept apart, redirect suggestions on request, .htaccess rule copy and Redirect Manager hand-off, CSV export.
