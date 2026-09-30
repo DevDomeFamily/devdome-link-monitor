@@ -168,6 +168,21 @@ function devdlink_inline_css()
 /* DESIGN.md section 15 canonical connect button (BLUE, not the indigo save). */
 .dd-app .lm-connect-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:14px; font-weight:600; border-radius:8px; padding:10px 20px; line-height:1; white-space:nowrap; color:#fff; background:#2563eb; border:1px solid #2563eb; box-shadow:0 4px 10px -3px rgba(37,99,235,.5); text-decoration:none; transition:all .12s; }
 .dd-app .lm-connect-btn:hover { background:#1d4ed8; border-color:#1d4ed8; color:#fff; }
+/* DevDome Account card = the Bot Protection / DevDome Tools Connect card, one to one (owner 2026-09-30). */
+.dd-app .lm-conn { display:flex; align-items:center; gap:16px; background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:18px 20px; margin-bottom:12px; box-shadow:0 1px 2px rgba(0,0,0,.05); flex-wrap:wrap; }
+.dd-app .lm-conn-ci { display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px; border-radius:12px; background:linear-gradient(150deg,#3b82f6,#2563eb 55%,#1d4ed8); box-shadow:0 7px 15px -6px rgba(37,99,235,.6); flex:none; color:#fff; font-weight:800; letter-spacing:-1px; font-size:18px; }
+.dd-app .lm-conn-ci.is-ok { background:#10b981; box-shadow:none; }
+.dd-app .lm-conn-body { flex:1 1 320px; min-width:0; }
+.dd-app .lm-conn-body strong { display:block; font-size:14.5px; font-weight:700; color:#0f172a; }
+.dd-app .lm-conn-body span { font-size:12.5px; color:#475569; line-height:1.45; }
+.dd-app .lm-conn-body a { color:#2563eb; text-decoration:underline; }
+.dd-app .lm-conn-ctl { display:flex; flex-direction:column; gap:8px; flex:0 1 272px; }
+.dd-app .lm-conn-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:14px; font-weight:600; border-radius:8px; padding:10px 20px; text-decoration:none; cursor:pointer; line-height:1; border:1px solid transparent; white-space:nowrap; transition:.12s; }
+.dd-app .lm-conn-solid { width:100%; padding:9px 14px; color:#fff; background:#2563eb; border-color:#2563eb; box-shadow:0 4px 10px -3px rgba(37,99,235,.5); }
+.dd-app .lm-conn-solid:hover { background:#1d4ed8; border-color:#1d4ed8; color:#fff; }
+.dd-app .lm-conn-ghost { color:#2563eb; background:#eaf1ff; border-color:#cfe0ff; }
+.dd-app .lm-conn-ghost:hover { background:#2563eb; color:#fff; border-color:#2563eb; }
+.dd-app .lm-conn-hint { font-size:11px; color:#8a94a6; text-align:center; margin:0; }
 /* Header account pill (SMC "Recycle Bin protected" twin) + the overview dashboard. */
 .dd-app a.dd-pill { text-decoration:none; }
 .dd-app .lm-ov { display:grid; grid-template-columns:minmax(220px,250px) minmax(0,1fr); gap:16px; margin-bottom:16px; }
@@ -907,8 +922,8 @@ function devdlink_render_dashboard_tab($s)
                 <div class="lm-kv"><span><?php esc_html_e('DevDome account', 'devdome-link-monitor'); ?></span><span class="<?php echo !empty($conn['ok']) ? 'lm-on' : 'lm-off'; ?>"><?php echo !empty($conn['ok']) ? esc_html((string) $conn['account_id']) : esc_html__('Not connected', 'devdome-link-monitor'); ?></span></div>
                 <?php if (empty($conn['ok'])) : ?>
                     <div style="margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;">
-                        <a class="lm-connect-btn" href="<?php echo esc_url($connect_url); ?>"><?php esc_html_e('Connect your DevDome account', 'devdome-link-monitor'); ?></a>
-                        <span style="font-size:13px;color:#6b7280;"><?php esc_html_e('See this site in your DevDome dashboard. Everything here stays free and runs locally either way.', 'devdome-link-monitor'); ?></span>
+                        <a class="lm-connect-btn" href="<?php echo esc_url(admin_url('admin.php?page=' . DEVDLINK_PAGE . '&lm_tab=settings#lm-devdome-account')); ?>"><?php esc_html_e('Connect your DevDome account', 'devdome-link-monitor'); ?></a>
+                        <span style="font-size:13px;color:#6b7280;"><?php esc_html_e('See this site in your DevDome dashboard. Everything here stays free and runs locally either way. Connecting is explained on the Settings tab.', 'devdome-link-monitor'); ?></span>
                     </div>
                 <?php endif; ?>
             </div>
@@ -1196,21 +1211,31 @@ function devdlink_render_settings_tab()
             </div>
             </section>
 
+            <?php if (empty($conn['ok'])) : // the card is the consent step; a connected site shows nothing here (disconnect = the DevDome hub) ?>
+            <section style="margin-bottom:32px;" id="lm-devdome-account">
+            <div class="dd-sec-head"><span class="dashicons dashicons-admin-links dd-ico"></span><h2 class="dd-h2"><?php esc_html_e('DevDome Account', 'devdome-link-monitor'); ?></h2></div>
+            <?php
+            // The DevDome Tools dashboard Connect card (same as Bot Protection), shortened (owner 2026-09-30). The buttons belong to
+            // forms printed AFTER the settings form (form="..."): a form inside the settings form would be nested and break both.
+            ?>
+                <div class="lm-conn">
+                    <span class="lm-conn-ci">DD</span>
+                    <div class="lm-conn-body">
+                        <strong><?php esc_html_e('Connect this site to your DevDome account', 'devdome-link-monitor'); ?></strong>
+                        <span>Connect sends your domain, site token, active DevDome plugins and software versions to api.devdome.com. Each finished scan then sends a scan summary. See the readme's External services section for details. <a href="https://devdome.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a> &middot; <a href="https://devdome.com/terms-of-service" target="_blank" rel="noopener noreferrer">Terms of Service</a></span>
+                    </div>
+                    <div class="lm-conn-ctl">
+                        <button type="submit" form="lm-connect-form" class="lm-conn-btn lm-conn-solid"><?php esc_html_e('Connect your DevDome account', 'devdome-link-monitor'); ?></button>
+                        <p class="lm-conn-hint"><?php esc_html_e('Opens devdome.com to sign in, then links this site.', 'devdome-link-monitor'); ?></p>
+                    </div>
+                </div>
+            </section>
+            <?php endif; ?>
+
             <section style="margin-bottom:32px;">
             <div class="dd-sec-head"><span class="dashicons dashicons-email dd-ico"></span><h2 class="dd-h2"><?php esc_html_e('Email', 'devdome-link-monitor'); ?></h2></div>
             <div class="dd-card">
                 <table class="dd-table">
-                    <tr>
-                        <th class="dd-th"><?php esc_html_e('DevDome account', 'devdome-link-monitor'); ?></th>
-                        <td class="dd-td">
-                            <?php if (!empty($conn['ok'])) : ?>
-                                <span class="dd-pill dd-pill-ok"><span class="dashicons dashicons-yes-alt" style="font-size:14px;width:14px;height:14px;"></span> <?php echo esc_html(trim((string) $conn['account_id'] . (!empty($conn['email']) ? ' · ' . $conn['email'] : ''))); ?></span>
-                            <?php else : ?>
-                                <a class="lm-connect-btn" href="<?php echo esc_url($connect_url); ?>"><?php esc_html_e('Connect your DevDome account', 'devdome-link-monitor'); ?></a>
-                            <?php endif; ?>
-                            <p class="dd-hint"><?php esc_html_e('Needed only for email summaries.', 'devdome-link-monitor'); ?> <?php devdlink_tip(__('Email summaries go to the email of the connected DevDome account only. Everything else in this plugin works without an account.', 'devdome-link-monitor')); ?></p>
-                        </td>
-                    </tr>
                     <tr>
                         <th class="dd-th"><?php esc_html_e('Email summary', 'devdome-link-monitor'); ?></th>
                         <td class="dd-td">
@@ -1236,6 +1261,13 @@ function devdlink_render_settings_tab()
                 </div>
             </footer>
         </form>
+        <?php if (empty($conn['ok'])) : ?>
+        <form id="lm-connect-form" method="post" action="<?php echo esc_url(add_query_arg('return', rawurlencode(admin_url('admin.php?page=' . DEVDLINK_PAGE . '&lm_tab=settings')), admin_url('admin-post.php'))); ?>" style="display:none;">
+            <input type="hidden" name="action" value="devdcorev1_connect_go">
+            <input type="hidden" name="devdcorev1_inventory" value="1">
+            <?php wp_nonce_field('devdcorev1_connect_go'); ?>
+        </form>
+        <?php endif; ?>
     </div>
     <?php
 }

@@ -1,18 +1,22 @@
-=== DevDome Link Monitor: Broken Link Checker, Dead Links & 404 Monitor ===
+=== DevDome Link Monitor: Broken Link Checker, Dead Link Checker, Broken Link Finder ===
 Contributors: devdome
 Tags: broken link checker, dead link checker, external link checker, broken link finder, 404 monitor
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.7.3
+Stable tag: 1.7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-External link checker for published post content. Find broken images and URLs, edit exact links and log visitor or bot 404 errors.
+Find broken links, broken images, and dead links in published content. Edit exact URLs in place and log visitor or bot 404 errors in the 404 monitor.
 
 == Description ==
 
-DevDome Link Monitor is a broken link checker and 404 monitor for WordPress. Scan published content for dead URLs, review missing-page requests from visitors and crawlers, and fix broken links from your dashboard without opening every post. Link checking runs on your own server, requires no cloud account and has no page or link limits.
+DevDome Link Monitor is a broken link checker and dead link checker for WordPress. Find broken links, dead links and broken images in the saved content of published posts in public post types, excluding attachments.
+
+Use the broken link finder as an internal and external link checker. Edit an exact link URL across the posts containing it, or remove the link while keeping its anchor text. Link checks run on your server, with no cloud account or page or link limits.
+
+The built-in 404 monitor logs missing-page requests from visitors and bots, with separate human and bot hit counts. Review 404 errors, ignore paths, delete entries and export the log to CSV.
 
 = Find broken links and missing images =
 
@@ -125,7 +129,7 @@ Every ability runs the same code as the plugin screens under the same capability
 This plugin makes outbound HTTP requests for one core purpose, one optional DevDome service and one small catalog fetch:
 
 1. **Link checking (the sites you link to): core feature, runs only when a scan runs.** To verify your outgoing links, the plugin sends an HTTP HEAD request (with a GET fallback for servers that reject or gate HEAD) from your server directly to each URL found in your published content. The target server sees your server's IP address, the configurable user-agent string and the URL itself - including anything personal or secret a URL in your own content happens to contain. No cookies, authentication headers or site secrets are sent. A scan only runs when you start one or when the schedule you enabled fires. Before a failure is recorded from a HEAD response, it is confirmed with a size-capped GET, because some servers mishandle HEAD. Before any request is sent the URL must pass a fail-closed policy: http/https only, port 80 or 443 only, no credentials in the URL, and every address the host resolves to must be public - loopback, private, link-local, carrier-grade NAT, multicast and reserved ranges are refused, in every notation, on the first request and on every redirect hop. Link verification requires the PHP cURL transport, because the validated addresses must be pinned to the connection. If cURL is unavailable, or WordPress routes the target through a configured HTTP proxy where the destination cannot be pinned, the URL is left unverified and no request is sent. These are the websites you link to, not DevDome services.
-2. **DevDome account service (analytics.devdome.com and api.devdome.com): optional, opt-in, dormant.** The Overview tab shows an optional card that links to the bundled DevDome suite hub's Account screen. Nothing is sent to DevDome until you click Connect there, and no functionality on this screen is gated on connecting. If you do connect: the plugin sends your site address, a generated site ID and a generated secret site token to `analytics.devdome.com/api/plugin/connect/start` and `/api/plugin/connect/claim` to link this site to your account; afterwards it periodically confirms the connection at `api.devdome.com/plugin/account` (sending the site domain and that token), and disconnecting sends the same identifiers to `api.devdome.com/plugin/disconnect`. No scanned URL, anchor text, post title, 404 path, referrer, user agent or visitor IP address is sent by this plugin. When you connect from the DevDome Tools dashboard, whose Connect card states this before you press the button, those account checks also carry the slug and version of each active DevDome plugin on the site plus the bundled DevDome library, WordPress and PHP versions, so your DevDome account can show your sites and their DevDome plugins for support and update notices. Nothing about other plugins, users, email addresses, content or visitors is included. Sites connected before this was introduced, and sites connected from a button that does not show that text, do not send the list. Disconnecting stops the plugin list. Terms: https://devdome.com/terms-of-service and privacy: https://devdome.com/privacy-policy
+2. **DevDome account service (analytics.devdome.com and api.devdome.com): optional, opt-in, dormant.** The Settings tab shows the DevDome Account card, which states everything below before you press Connect; the Overview status button leads to it. Nothing is sent to DevDome until you click Connect there, and no functionality on this screen is gated on connecting. If you do connect: the plugin sends your site address, a generated site ID and a generated secret site token to `analytics.devdome.com/api/plugin/connect/start` and `/api/plugin/connect/claim` to link this site to your account; afterwards it periodically confirms the connection at `api.devdome.com/plugin/account` (sending the site domain and that token), and disconnecting sends the same identifiers to `api.devdome.com/plugin/disconnect`. No scanned URL, anchor text, post title, 404 path, referrer, user agent or visitor IP address is sent by this plugin. When you connect from the DevDome Tools dashboard or from this plugin's Settings account card, both of which state this before you press the button, those account checks also carry the slug and version of each active DevDome plugin on the site plus the bundled DevDome library, WordPress and PHP versions, so your DevDome account can show your sites and their DevDome plugins for support and update notices. Nothing about other plugins, users, email addresses, content or visitors is included. Sites connected before this was introduced, and sites connected from a button that does not show that text, do not send the list. Disconnecting stops the plugin list. Terms: https://devdome.com/terms-of-service and privacy: https://devdome.com/privacy-policy
    Once connected, each completed link scan sends DevDome this site's DevDome identifiers (the site ID, and the site token in a request header), the scan number, aggregate scan metrics (links checked, healthy, broken, redirects, health score, how many links are newly broken), whether the email summary is switched on, and the address of this plugin screen (so the email can link back to it). It does not send scanned link URLs, anchor text, source post titles, 404 request paths, referrers, user agents or visitor IP addresses. DevDome uses it for your account dashboard and to email you that summary from alerts@devdome.com. Nothing is sent while the site is not connected.
 3. **Plugin catalog (`devdome.com`).** The DevDome Dashboard inside wp-admin fetches the list of DevDome plugins (names, descriptions, logos, links, WordPress.org slugs) from `https://devdome.com/wp-plugins/catalog.json` at most once every 12 hours, so the list stays current. Only the bundled core version is sent in the request; no site or visitor data. Service provider: DevDome. Terms: https://devdome.com/terms-of-service Privacy policy: https://devdome.com/privacy-policy
 
@@ -217,6 +221,13 @@ You can request suggestions matched against existing post and page slugs. Use th
 4. Scan Settings: check timeout, posts and links per batch, user agent and excluded domains.
 
 == Changelog ==
+
+= 1.7.4 =
+
+* Listing text updated: title, short description, tags and introduction.
+* Settings: the DevDome Account card, the same as in the other DevDome plugins, explains what connecting sends before you press Connect; the Overview button now leads to it.
+* Shared DevDome library 1.7.8: the one-time Report a bug hint is recorded through a nonce-checked request instead of on a page view.
+* Shared DevDome library 1.7.9: the DevDome dashboard lists only real problems (a feature that is off, paused or not connected is no longer an issue) and no longer says Not monitored.
 
 = 1.7.3 =
 * Bundled DevDome library 1.7.6: if you connect a DevDome account from the DevDome Tools dashboard, the Connect card now says exactly what is shared, including the list of active DevDome plugins and their versions. Sites that were already connected, and sites that never connect, send nothing new. See External services.
