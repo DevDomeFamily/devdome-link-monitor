@@ -6,7 +6,7 @@
 [![Tested WP](https://img.shields.io/wordpress/plugin/tested/devdome-link-monitor)](https://wordpress.org/plugins/devdome-link-monitor/)
 [![License GPL-2.0+](https://img.shields.io/badge/license-GPL--2.0%2B-blue.svg)](LICENSE)
 
-External link checker for published post content. Find broken images and URLs, edit exact links and log visitor or bot 404 errors. This free WordPress broken link checker combines on-demand scans with an always-on 404 monitor. Review dead links and uncertain results separately before making changes.
+Find broken links & broken images in published content. Fix broken links & find 404 errors. Check internal and external links on your server without an account, then edit exact link URLs across posts or remove links while keeping their anchor text. The built-in 404 monitor logs missing-page requests with separate human and bot hit counts.
 
 [![DevDome Link Monitor, free WordPress broken link checker and 404 monitor](https://ps.w.org/devdome-link-monitor/assets/banner-1544x500.png)](https://devdome.com)
 
