@@ -1,4 +1,4 @@
-# DevDome Link Monitor: Broken Link Checker, Dead Links & 404 Monitor
+# DevDome Link Monitor: Broken Link Checker, Dead Link Checker, Broken Link Finder
 
 [![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/devdome-link-monitor?label=wp.org)](https://wordpress.org/plugins/devdome-link-monitor/)
 [![Active Installs](https://img.shields.io/wordpress/plugin/installs/devdome-link-monitor)](https://wordpress.org/plugins/devdome-link-monitor/)

@@ -4,11 +4,11 @@ Tags: broken link checker, dead link checker, external link checker, broken link
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.7.4
+Stable tag: 1.7.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Find broken links, broken images, and dead links in published content. Edit exact URLs in place and log visitor or bot 404 errors in the 404 monitor.
+Find broken links & broken images in published content. Fix broken links & find 404 errors.
 
 == Description ==
 
@@ -221,6 +221,11 @@ You can request suggestions matched against existing post and page slugs. Use th
 4. Scan Settings: check timeout, posts and links per batch, user agent and excluded domains.
 
 == Changelog ==
+
+= 1.7.5 =
+
+* Shared DevDome library 1.7.10: the DevDome dashboard icons are printed through the WordPress escaping functions (WordPress.org review rule).
+* Short description rewritten.
 
 = 1.7.4 =
 
